@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import pytz
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
-from aiogram.filters import Command, CommandObject, BaseFilter, ChatMemberUpdatedFilter
+from aiogram.filters import Command, CommandObject, BaseFilter
 from aiogram.filters.chat_member_updated import MEMBER_STATUS_CHANGED
 from aiogram.types import (
     Message, ReplyKeyboardMarkup, KeyboardButton, 
@@ -312,21 +312,24 @@ async def cmd_add_coins(message: Message, command: CommandObject):
     await message.answer(f"💰 Пользователю @{username} начислено `{amount}` Дум.")
 
 # --- АВТОПОВЫШЕНИЕ СОЗДАТЕЛЯ ПРИ ДОБАВЛЕНИИ БОТА ---
-@dp.my_chat_member(ChatMemberUpdatedFilter(MEMBER_STATUS_CHANGED))
+@dp.my_chat_member()
 async def on_bot_added(event: ChatMemberUpdated):
-    if event.new_chat_member.status == "member":
+    # Проверяем, что бота именно добавили в чат как участника
+    if event.new_chat_member.status in ["member", "administrator"]:
         chat_id = event.chat.id
+        
         with get_db() as conn:
             conn.execute("INSERT OR IGNORE INTO bot_chats (chat_id, title) VALUES (?, ?)", (chat_id, event.chat.title))
             conn.commit()
             
         try:
             admins = await event.chat.get_administrators()
-            for adm in admins:
-                if adm.status == "creator" and not adm.user.is_bot:
-                    add_user_if_not_exists(adm.user.id, chat_id, adm.user.username, role_id=4)
-                    await bot.send_message(adm.user.id, f"🏆 Вы назначены Отцом в чате *{event.chat.title}* как создатель чата.")
-        except Exception: pass
+            for a in admins:
+                if a.status == "creator" and not a.user.is_bot:
+                    add_user_if_not_exists(a.user.id, event.chat.id, a.user.username, role_id=4)
+                    await bot.send_message(a.user.id, f"🏆 Вы назначены Отцом в чате *{event.chat.title}*.")
+        except Exception as e:
+            print(f"Ошибка при получении админов: {e}")
 
 # --- КЛАССИЧЕСКАЯ МОДЕРАЦИЯ (Мут, Бан, Варн) ---
 @dp.message(Command("mute", "мут"), RoleFilter(2))
