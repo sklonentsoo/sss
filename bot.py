@@ -3,7 +3,7 @@ import random
 from datetime import datetime, timedelta
 import pytz
 from aiogram import Bot, Dispatcher, F
-from aiogram.filters import Command, CommandObject, ChatMemberUpdatedFilter
+from aiogram.filters import Command, CommandObject, BaseFilter, ChatMemberUpdatedFilter, MEMBER_STATUS_CHANGED
 from aiogram.types import (
     Message, ReplyKeyboardMarkup, KeyboardButton, 
     InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ChatMemberUpdated
