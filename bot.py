@@ -310,7 +310,7 @@ async def cmd_add_coins(message: Message, command: CommandObject):
     await message.answer(f"💰 Пользователю @{username} начислено `{amount}` Дум.")
 
 # --- АВТОПОВЫШЕНИЕ СОЗДАТЕЛЯ ПРИ ДОБАВЛЕНИИ БОТА ---
-@dp.my_chat_member(ChatMemberUpdatedFilter(member_status_changed))
+@dp.my_chat_member(ChatMemberUpdatedFilter(MEMBER_STATUS_CHANGED))
 async def on_bot_added(event: ChatMemberUpdated):
     if event.new_chat_member.status == "member":
         chat_id = event.chat.id
