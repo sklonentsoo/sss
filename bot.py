@@ -3,6 +3,7 @@ import random
 from datetime import datetime, timedelta
 import pytz
 from aiogram import Bot, Dispatcher, F
+from aiogram.client.default import DefaultBotProperties
 from aiogram.filters import Command, CommandObject, BaseFilter, ChatMemberUpdatedFilter, MEMBER_STATUS_CHANGED
 from aiogram.types import (
     Message, ReplyKeyboardMarkup, KeyboardButton, 
@@ -17,7 +18,7 @@ from database import init_db, get_db, get_user, add_user_if_not_exists, reset_da
 from filters import RoleFilter, IsGroup
 from middlewares import ChatModerationMiddleware
 
-bot = Bot(token=BOT_TOKEN, parse_mode="Markdown")
+bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode="Markdown"))
 dp = Dispatcher(storage=MemoryStorage())
 
 class ShopStates(StatesGroup):
