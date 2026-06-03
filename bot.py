@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 import pytz
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
-from aiogram.filters import Command, CommandObject, BaseFilter, ChatMemberUpdatedFilter, MEMBER_STATUS_CHANGED
+from aiogram.filters import Command, CommandObject, BaseFilter, ChatMemberUpdatedFilter
+from aiogram.filters.chat_member_updated import MEMBER_STATUS_CHANGED
 from aiogram.types import (
     Message, ReplyKeyboardMarkup, KeyboardButton, 
     InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ChatMemberUpdated
